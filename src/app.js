@@ -2,12 +2,13 @@ const express = require("express");
 const cors = require("cors");
 const path = require("path");
 const reminders = require("./reminders");
+
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 
-//Serve frontend automatically
+// Serve frontend automatically
 app.use(express.static(path.join(__dirname, "../public")));
 
 // HEALTH CHECK (required for CI/CD + Docker later)
@@ -44,6 +45,4 @@ app.delete("/api/reminders/:id", (req, res) => {
   deleted ? res.json(deleted) : res.status(404).json({ error: "Not found" });
 });
 
-// Start server
-app.listen(4000, () => console.log("🚀 Reminder App running at http://localhost:4000"));
 module.exports = app;
