@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reminder Studio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="bg-gradient"></div>
+  <div class="app-shell">
+    <header class="top-bar">
+      <div class="brand">
+        <span class="brand-dot"></span>
+        <div>
+          <p class="eyebrow">Reminder Studio</p>
+          <h1>Plan, track, and feel prepared.</h1>
+        </div>
+      </div>
+      <div class="top-actions">
+        <div class="status-pill checking" id="api-status">Local API: checking...</div>
+        <button class="button ghost" id="health-button">Check health</button>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section class="panel highlight">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">Quick add</p>
+            <h2>New reminder</h2>
+          </div>
+          <div class="meta" id="editing-label"></div>
+        </div>
+
+        <form id="reminder-form" class="form">
+          <label class="field">
+            <span class="label">Title</span>
+            <input id="title" name="title" placeholder="Quarterly planning, dentist, launch review..." autocomplete="off" required>
+          </label>
+          <label class="field">
+            <span class="label">Date</span>
+            <input id="date" name="date" type="date" required>
+          </label>
+          <div class="form-actions">
+            <button type="submit" class="button primary" id="submit-btn">Save reminder</button>
+            <button type="button" class="button ghost" id="cancel-edit" hidden>Cancel edit</button>
+          </div>
+          <p class="feedback" id="feedback" role="status"></p>
+        </form>
+      </section>
+
+      <section class="panel list-panel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">Schedule</p>
+            <h2>Your reminders</h2>
+          </div>
+          <div class="chip" id="count-chip">0 items</div>
+        </div>
+        <ul id="list" class="reminder-list"></ul>
+        <div class="empty-state" id="empty-state">
+          <p class="eyebrow">Nothing scheduled yet</p>
+          <p>Add a title and date to start a clean, prioritized list.</p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
