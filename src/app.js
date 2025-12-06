@@ -26,9 +26,16 @@ app.get("/api/reminders", (req, res) => {
 // Add reminder
 app.post("/api/reminders", (req, res) => {
   const { title, date } = req.body;
+
+  // NEW VALIDATION FIX
+  if (!title || !date) {
+    return res.status(400).json({ error: "title and date are required" });
+  }
+
   const newReminder = reminders.add(title, date);
   res.json(newReminder);
 });
+
 
 // Edit reminder
 app.put("/api/reminders/:id", (req, res) => {
