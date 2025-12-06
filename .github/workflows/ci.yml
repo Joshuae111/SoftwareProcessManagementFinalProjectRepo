@@ -28,7 +28,11 @@ jobs:
 
       - name: Run tests
         run: npm test
+        env:
+          NODE_ENV: test
 
       - name: Run tests with coverage
         run: npm test -- --coverage
+        env:
+          NODE_ENV: test
         continue-on-error: true
