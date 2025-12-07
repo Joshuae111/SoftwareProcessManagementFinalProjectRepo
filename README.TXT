@@ -121,7 +121,54 @@ These tests are used both locally and later in the CI pipeline.
 
 ---
 
-## 7. Project Structure
+## 7. Running with Docker (Staging + Production)
+
+The goal is to spin up a containerized version of the app using Docker. 
+
+Note:
+- Docker Desktop should already be running.
+
+- Make sure `npm start` is NOT running (port 4000 must be free).
+
+From the project root:
+
+1) Build the Docker image:
+
+   docker compose build
+
+2) Start STAGING container (app on port 5000):
+
+   docker compose up staging -d
+
+3) Start PRODUCTION container (app on port 7000):
+
+   docker compose up production -d
+
+4) See running containers:
+
+   docker compose ps
+
+   - You should see:
+       reminder-staging   0.0.0.0:5000->4000/tcp
+       reminder-production 0.0.0.0:7000->4000/tcp
+
+5) Test in browser:
+
+   STAGING:
+     http://localhost:5000
+     http://localhost:5000/health
+
+   PRODUCTION:
+     http://localhost:7000
+     http://localhost:7000/health
+
+6) When done, stop everything:
+
+   docker compose down
+
+---
+
+## 8. Project Structure
 
 High-level layout:
 
@@ -148,7 +195,7 @@ High-level layout:
 
 ---
 
-## 8. Next Steps for the CI/CD Project
+## 9. Next Steps for the CI/CD Project
 
 This repository will be extended to include:
 
