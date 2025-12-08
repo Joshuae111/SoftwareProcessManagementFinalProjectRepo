@@ -85,11 +85,22 @@ describe("Reminder API - Functional Tests", () => {
   });
 
   test("POST /api/reminders requires title and date", async () => {
-    
-    const resNoData = await request(app)
-      .post("/api/reminders")
-      .send({});
+  const res = await request(app)
+    .post("/api/reminders")
+    .send({});
 
-    expect(resNoData.statusCode).toBe(200);
-  });
+  expect(res.statusCode).toBe(400);
+  expect(res.body).toHaveProperty("error");
+});
+
+test("POST /api/reminders rejects missing fields", async () => {
+  const res = await request(app)
+    .post("/api/reminders")
+    .send({ title: "" });
+
+  expect(res.statusCode).toBe(400);
+  expect(res.body).toHaveProperty("error");
+});
+
+
 });

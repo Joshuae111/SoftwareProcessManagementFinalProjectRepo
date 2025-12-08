@@ -1,39 +1,60 @@
-# Reminder Studio (Node.js + Express)
+Reminder Studio — Full Stack Reminder App (Node.js + Express + Docker + CI/CD)
 
-A simple reminder / to-do web app used to demonstrate CI/CD, automated testing, and
-Docker deployment for SYST 38634 – Software Process Management.
+Reminder Studio is a lightweight, containerized web application for managing reminders.
+It includes a frontend UI, a backend API, and complete CI/CD automation using GitHub Actions.
 
-The app lets you:
-- Add reminders with a title and date
-- Edit existing reminders
-- Delete reminders
-- See status badges like "On track", "Due soon", and "Past due"
-- Check a /health endpoint used by Docker and CI/CD
+The project demonstrates modern software engineering practices including automated testing, branching workflows, and multi-environment deployment (staging + production).
 
-Everything runs on a single Node.js + Express server, with a clean frontend served from
-the same port.
+📌 Features
 
----
+Create, view, update, and delete reminders
 
-## 1. Requirements
+Clean, responsive UI served directly by Express
 
-- Node.js (LTS recommended, e.g. 18+)
-- npm
+Status badges (On Track, Due Soon, Past Due)
 
-No database or external services are required. All reminders are stored in-memory.
+Fully tested backend (18 automated tests)
 
----
+Staging & Production environments using Docker Compose
 
-## 2. Getting Started
+CI/CD pipelines for testing and automated builds
 
-### Quick Start (Local)
+Health check endpoint for monitoring & deployment
 
-1. Clone the repository:
+Consistent governance: issue templates + code review templates
 
-   git clone https://github.com/Joshuae111/SoftwareProcessManagementFinalProjectRepo.git
-   cd SoftwareProcessManagementFinalProjectRepo
-
-2. Install dependencies:
+📁 Project Structure
+REMINDER-APP/
+│
+├── .github/workflows/
+│   ├── ci.yml
+│   ├── staging-deploy.yml
+│   └── production-deploy.yml
+│
+├── docs/
+│   ├── CODE_REVIEW_TEMPLATE.md
+│   └── ISSUE_TEMPLATE.md
+│
+├── public/                 # Static frontend
+│   ├── index.html
+│   ├── script.js
+│   └── style.css
+│
+├── src/
+│   ├── app.js              # Express app (routes + middleware)
+│   ├── reminders.js        # In-memory data store
+│   └── server.js           # Starts local development server
+│
+├── tests/                  # Jest + Supertest automated tests
+│   ├── health.test.js
+│   ├── reminders.functional.test.js
+│   └── reminders.nonfunctional.test.js
+│
+├── Dockerfile
+├── docker-compose.yml
+├── package.json
+├── package-lock.json
+└── README.md
 
    npm ci
 
@@ -67,22 +88,31 @@ No database or external services are required. All reminders are stored in-memor
 4. Stop containers:
 
    docker compose down
+🚀 Quick Start (Local Development)
+1. Install prerequisites
 
----
+Node.js 18 or 20
 
-## 3. How to Run the App
+npm
 
 ### Local Development
 
 Start the server:
+(Optional) Docker Desktop
 
-   npm start
+2. Clone the repository
+git clone https://github.com/Joshuae111/SoftwareProcessManagementFinalProjectRepo.git
+cd SoftwareProcessManagementFinalProjectRepo
 
 The app listens on **port 4000**.
 
 Open your browser:
+3. Install dependencies
+npm install
 
-   http://localhost:4000
+4. Start the server (local mode)
+npm start
+
 
 You should see the Reminder Studio UI.
 
@@ -91,60 +121,61 @@ You should see the Reminder Studio UI.
 See the **Getting Started (Docker)** section above.
 
 Both staging and production containers run the same app but on different ports for demonstration purposes.
+Local development runs on:
 
----
+👉 http://localhost:4000
 
-## 4. Health Check Endpoint
+Check backend health:
 
-The application exposes a health check endpoint used by Docker and CI/CD:
+👉 http://localhost:4000/health
 
-   GET /health
+🧪 Running Tests
 
-Example in browser:
+The project includes:
 
-   http://localhost:4000/health
+✔ Smoke tests
+✔ Functional CRUD tests
+✔ Non-functional performance tests
+✔ Validation tests
 
-Expected response (JSON):
+Run all tests:
 
-   {
-     "status": "healthy",
-     "environment": "dev"
-   }
+npm test
 
-The UI also has a "Check health" button in the top bar that calls this endpoint and
-shows the status.
 
----
+All 19 tests must pass.
 
-## 5. API Endpoints (Backend)
+📦 Docker Deployment
 
-All API routes return JSON.
+The project includes two Docker environments:
 
-- GET /api/reminders  
-  Returns an array of all reminders.
+Environment	Port	Purpose
+Staging	5000	Pre-production testing
+Production	7000	Final environment
+Start both environments
+docker compose up --build
 
-- POST /api/reminders  
-  Body: { "title": string, "date": "YYYY-MM-DD" }  
-  Creates a new reminder and returns it.
+Staging environment
 
-- PUT /api/reminders/:id  
-  Body: { "title": string, "date": "YYYY-MM-DD" }  
-  Updates an existing reminder.
+👉 http://localhost:5000
 
-- DELETE /api/reminders/:id  
-  Deletes the reminder with the given id.
+👉 http://localhost:5000/health
 
-Data is stored in memory only (no persistent database).
+Production environment
 
----
+👉 http://localhost:7000
 
-## 6. Running Tests
+👉 http://localhost:7000/health
 
 ### Locally
 
 Run all tests:
+Stop containers
+docker compose down
 
-   npm test
+🌐 API Reference
+
+All endpoints return JSON.
 
 This executes tests in the `tests/` folder using Jest and Supertest.
 
@@ -172,35 +203,34 @@ Tests automatically run on:
 - Every pull request (via `.github/workflows/ci.yml`)
 - Merges to staging (via `.github/workflows/staging-deploy.yml`)
 - Merges to main/production (via `.github/workflows/production-deploy.yml`)
+GET /api/reminders
 
----
+Retrieve all reminders.
 
-## 7. Project Structure
+Response:
 
-High-level layout:
+[
+  { "id": 1, "title": "Test", "date": "2025-01-01" }
+]
 
-   /public
-     index.html        -> Frontend UI
-     style.css         -> Styling for the app
-     script.js         -> Frontend logic, calls the API
+POST /api/reminders
 
-   /src
-     app.js            -> Express app (routes, middleware, health check)
-     reminders.js      -> In-memory reminder store
-     server.js         -> Starts the Express server (npm start entry point)
+Create a new reminder.
 
-   /tests
-     health.test.js
-     reminders.functional.test.js
-     reminders.nonfunctional.test.js
+Body:
 
-   /docs
-     (Project documentation, governance templates, screenshots, etc. will go here)
+{ "title": "Buy milk", "date": "2025-01-01" }
 
-   /.github/workflows
-     (GitHub Actions CI/CD workflows will be added here later)
 
----
+Validation:
+
+Title required
+
+Date required
+
+Empty body rejected
+
+PUT /api/reminders/:id
 
 ## 8. CI/CD & Deployment
 
@@ -315,3 +345,108 @@ When contributing to this project:
 - Ensure Docker and Docker Compose are installed
 - Run `docker compose down` to stop containers
 - Run `docker system prune` to clean up unused images/containers
+Update a reminder.
+
+DELETE /api/reminders/:id
+
+Delete a reminder.
+
+❤️ Health Check
+
+Used by CI/CD + Docker:
+
+GET /health
+
+{
+  "status": "healthy",
+  "environment": "dev"
+}
+
+
+For staging/production, environment will change based on NODE_ENV.
+
+🔧 CI/CD Pipeline Overview
+
+GitHub Actions automates:
+
+✔ Test execution
+✔ Environment validation
+✔ Docker image builds
+✔ Staging deployment
+✔ Production deployment
+
+Workflows found in:
+
+.github/workflows/
+│   ci.yml
+│   staging-deploy.yml
+│   production-deploy.yml
+
+CI Pipeline:
+
+Triggers on:
+
+Push to main
+
+Push to staging
+
+Push to feature/*
+
+Pull requests
+
+Runs:
+
+npm ci
+
+npm test
+
+Coverage tests
+
+Health check
+
+📜 Governance & Contribution Workflow
+
+The repo includes standard governance artifacts:
+
+✔ Issue Template
+
+Located under /docs/ISSUE_TEMPLATE.md
+Used for reporting bugs/changes.
+
+✔ Code Review Template
+
+Located under /docs/CODE_REVIEW_TEMPLATE.md
+Must be completed before merging.
+
+🔀 Branching & Workflow Model
+
+Team workflow:
+
+Create an Issue
+
+Create a branch:
+feature/issue-number-description
+
+Make changes & commit
+
+Push → Open a Pull Request into staging
+
+Teammate performs code review
+
+Approve & merge
+
+CI runs tests
+
+Merge staging → main when stable
+
+Close the issue
+
+This ensures a clean traceable workflow.
+
+🧭 Environment Summary
+Mode	How to Start	URL
+Local Dev	npm start	http://localhost:4000
+
+Staging (Docker)	docker compose up	http://localhost:5000
+
+Production (Docker)	docker compose up	http://localhost:7000
