@@ -56,6 +56,38 @@ REMINDER-APP/
 ├── package-lock.json
 └── README.md
 
+   npm ci
+
+3. Start the app:
+
+   npm start
+
+4. Open in your browser:
+
+   http://localhost:4000
+
+---
+
+### Getting Started (Docker)
+
+1. Clone the repository:
+
+   git clone https://github.com/Joshuae111/SoftwareProcessManagementFinalProjectRepo.git
+   cd SoftwareProcessManagementFinalProjectRepo
+
+2. Build and run containers:
+
+   docker compose build
+   docker compose up -d
+
+3. Access the app:
+
+   - **Staging:** http://localhost:5000
+   - **Production:** http://localhost:7000
+
+4. Stop containers:
+
+   docker compose down
 🚀 Quick Start (Local Development)
 1. Install prerequisites
 
@@ -63,12 +95,18 @@ Node.js 18 or 20
 
 npm
 
+### Local Development
+
+Start the server:
 (Optional) Docker Desktop
 
 2. Clone the repository
 git clone https://github.com/Joshuae111/SoftwareProcessManagementFinalProjectRepo.git
 cd SoftwareProcessManagementFinalProjectRepo
 
+The app listens on **port 4000**.
+
+Open your browser:
 3. Install dependencies
 npm install
 
@@ -76,6 +114,13 @@ npm install
 npm start
 
 
+You should see the Reminder Studio UI.
+
+### Docker (Staging & Production)
+
+See the **Getting Started (Docker)** section above.
+
+Both staging and production containers run the same app but on different ports for demonstration purposes.
 Local development runs on:
 
 👉 http://localhost:4000
@@ -122,6 +167,9 @@ Production environment
 
 👉 http://localhost:7000/health
 
+### Locally
+
+Run all tests:
 Stop containers
 docker compose down
 
@@ -129,6 +177,32 @@ docker compose down
 
 All endpoints return JSON.
 
+This executes tests in the `tests/` folder using Jest and Supertest.
+
+**Test files:**
+- `tests/health.test.js` – 5 smoke tests for the /health endpoint
+- `tests/reminders.functional.test.js` – 7 functional tests for CRUD operations
+- `tests/reminders.nonfunctional.test.js` – 6 performance tests
+
+**Expected output:**
+```
+Test Suites: 3 passed, 3 total
+Tests:       18 passed, 18 total
+```
+
+### In Docker
+
+To run tests in a container, you can build a test image or run:
+
+   docker compose run --rm staging npm test
+
+### CI/CD Pipeline
+
+Tests automatically run on:
+- Every push to any branch (via `.github/workflows/ci.yml`)
+- Every pull request (via `.github/workflows/ci.yml`)
+- Merges to staging (via `.github/workflows/staging-deploy.yml`)
+- Merges to main/production (via `.github/workflows/production-deploy.yml`)
 GET /api/reminders
 
 Retrieve all reminders.
@@ -158,6 +232,119 @@ Empty body rejected
 
 PUT /api/reminders/:id
 
+## 8. CI/CD & Deployment
+
+### GitHub Actions Workflows
+
+This repository includes three automated CI/CD workflows:
+
+**`.github/workflows/ci.yml`**
+- Runs on every push and pull request
+- Tests on Node.js 18.x and 20.x
+- Executes all 18 tests
+- Provides test coverage reports
+
+**`.github/workflows/staging-deploy.yml`**
+- Runs on push to `staging` branch
+- Installs dependencies
+- Runs full test suite
+- Optionally builds Docker image
+
+**`.github/workflows/production-deploy.yml`**
+- Runs on push to `main` branch
+- Full test validation
+- Health endpoint verification
+- Docker image build and tagging
+
+### Docker Deployment
+
+The `Dockerfile` and `docker-compose.yml` are configured for:
+- **Staging:** Port 5000 (NODE_ENV=staging)
+- **Production:** Port 7000 (NODE_ENV=production)
+
+Both images include health checks that call the `/health` endpoint.
+
+---
+
+## 9. Project Structure
+
+   /public
+     index.html        -> Frontend UI
+     style.css         -> Styling
+     script.js         -> Frontend logic (calls API)
+
+   /src
+     app.js            -> Express app (routes, middleware)
+     reminders.js      -> In-memory reminder store
+     server.js         -> Server startup (npm start entry point)
+
+   /tests
+     health.test.js                      -> 5 smoke tests
+     reminders.functional.test.js        -> 7 functional tests
+     reminders.nonfunctional.test.js     -> 6 performance tests
+
+   /.github/workflows
+     ci.yml                      -> Run tests on push/PR
+     staging-deploy.yml          -> Deploy to staging
+     production-deploy.yml       -> Deploy to production
+
+   /docs
+     (Project documentation, governance, screenshots)
+
+   Dockerfile                  -> Container image definition
+   docker-compose.yml          -> Multi-container setup
+   CODE_REVIEW_TEMPLATE.md     -> Code review checklist
+   package.json                -> Dependencies and scripts
+
+---
+
+## 10. Contributing
+
+When contributing to this project:
+
+1. Create a feature branch from `staging`:
+   ```
+   git checkout staging
+   git pull origin staging
+   git checkout -b feature/<your-task>
+   ```
+
+2. Make changes and test locally:
+   ```
+   npm test
+   ```
+
+3. Commit with clear messages:
+   ```
+   git add .
+   git commit -m "Describe your changes"
+   ```
+
+4. Push and create a pull request:
+   ```
+   git push -u origin feature/<your-task>
+   ```
+
+5. Request review using `CODE_REVIEW_TEMPLATE.md`
+
+6. After approval, merge into `staging`
+
+---
+
+## 11. Troubleshooting
+
+**Port already in use?**
+- Change the PORT environment variable or kill the process using port 4000
+
+**Tests failing locally?**
+- Ensure Node.js 18+ is installed: `node --version`
+- Run `npm ci` to clean-install dependencies
+- Check that no other instance is running on port 4000
+
+**Docker issues?**
+- Ensure Docker and Docker Compose are installed
+- Run `docker compose down` to stop containers
+- Run `docker system prune` to clean up unused images/containers
 Update a reminder.
 
 DELETE /api/reminders/:id
